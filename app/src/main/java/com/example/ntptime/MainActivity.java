@@ -26,19 +26,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         timeFormat = new SimpleDateFormat("HH:mm:ss");
-
         timeTextView = findViewById(R.id.timeTextView);
-        ImageView imageView = findViewById(R.id.imageView);
-
-        // Sätt bakgrundsbild
-        //imageView.setBackgroundResource(R.drawable.bild3);
 
         handler = new Handler();
 
-        // Uppdatera tid vid start
+        // Update tid when starting
         getSystemTime();
 
-        // Uppdatera varje sekund
+        // Update every sec
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -47,20 +42,20 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     getSystemTime();
                 }
-                handler.postDelayed(this, 1000); // Uppdatera varje sekund
+                handler.postDelayed(this, 1000);
             }
         }, 1000);
     }
 
-    // Funktion för att hämta systemtid
+    // Function to get system time
     private void getSystemTime() {
         Date date = new Date(System.currentTimeMillis());
         String time = timeFormat.format(date);
-        timeTextView.setText("Systemtid: " + time);
-        timeTextView.setTextColor(Color.BLACK);
+        timeTextView.setText("System time: " + time);
+        timeTextView.setTextColor(Color.parseColor("#FF33FF"));
     }
 
-    // Funktion för att hämta nätverkstid
+    // Function to get network time
     private void getNetworkTime() {
         NTPUDPClient client = new NTPUDPClient();
         Thread networkTimeThread = new Thread(new Runnable() {
@@ -87,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         networkTimeThread.start();
     }
 
-    // Funktion för kontroll av nätverkstillgänglighet
+    //Function for checking network availability
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {
