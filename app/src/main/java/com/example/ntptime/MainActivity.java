@@ -3,6 +3,8 @@ package com.example.ntptime;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
@@ -14,8 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView systemTimeTextView;
-    private TextView networkTimeTextView;
+    private TextView timeTextView;
     private SimpleDateFormat timeFormat;
     private Handler handler;
 
@@ -25,23 +26,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         timeFormat = new SimpleDateFormat("HH:mm:ss");
+        timeTextView = findViewById(R.id.timeTextView);
 
-        // Find the TextView elements in the layout via ID
+        /* Find the TextView elements in the layout via ID
         systemTimeTextView = findViewById(R.id.systemTimeTextView);
         networkTimeTextView = findViewById(R.id.networkTimeTextView);
+         */
 
         handler = new Handler();
 
         // Update time when starting
-        updateNetworkTime();
+        //updateNetworkTime();
+
         getSystemTime();
 
         //Update every sec
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                updateNetworkTime();
-                getSystemTime();
+                if(isNetworkAvailable()){
+                    updateNetworkTime();
+                } else {
+                    getSystemTime();
+                }
                 handler.postDelayed(this, 1000); // Update every sec
             }
         }, 1000);
@@ -51,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private String getSystemTime() {
         Date date = new Date(System.currentTimeMillis());
         String time = timeFormat.format(date);
-        systemTimeTextView.setText("System Time: " + time);
-        systemTimeTextView.setTextColor(Color.BLACK);
+        timeTextView.setText("System Time: " + time);
+        timeTextView.setTextColor(Color.BLACK);
         return time;
     }
 
@@ -74,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
                     String time = timeFormat.format(networkTime);
 
                     runOnUiThread(() -> {
-                        networkTimeTextView.setText("Network Time: " + time);
-                        systemTimeTextView.setTextColor(Color.BLACK);
+                        timeTextView.setText("Network Time: " + time);
+                        timeTextView.setTextColor(Color.BLACK);
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -83,5 +90,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         networkTimeThread.start();
+    }
+
+    //function control over network
+    private boolean isNetworkAvailable(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        if(connectivityManager != null){
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            return networkInfo != null &&networkInfo.isConnected();
+        } else{
+            return false;
+        }
+
     }
 }

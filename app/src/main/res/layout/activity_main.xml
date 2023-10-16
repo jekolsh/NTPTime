@@ -7,45 +7,20 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/systemTimeTextView"
+        android:id="@+id/timeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/material_dynamic_primary90"
         android:text="Systemtid: "
-        android:background="#0000FF"
         android:textSize="46sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/timeTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/networkTimeTextView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/networkTimeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nätverkstid: "
-        android:background="#FF0000"
-        android:textSize="46sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/systemTimeTextView"
-        app:layout_constraintBottom_toBottomOf="parent" />
-    <Button
-        android:id="@+id/activateAirplaneModeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Aktivera flygplansläge"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/resumeConnectionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Återuppta anslutning"
-        app:layout_constraintTop_toBottomOf="@+id/activateAirplaneModeButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+
+
 
 
 
