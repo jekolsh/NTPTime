@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.ImageView;
 import android.widget.TextView;
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
@@ -20,53 +21,47 @@ public class MainActivity extends AppCompatActivity {
     private SimpleDateFormat timeFormat;
     private Handler handler;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         timeFormat = new SimpleDateFormat("HH:mm:ss");
-        timeTextView = findViewById(R.id.timeTextView);
 
-        /* Find the TextView elements in the layout via ID
-        systemTimeTextView = findViewById(R.id.systemTimeTextView);
-        networkTimeTextView = findViewById(R.id.networkTimeTextView);
-         */
+        timeTextView = findViewById(R.id.timeTextView);
+        ImageView imageView = findViewById(R.id.imageView);
+
+        // Sätt bakgrundsbild
+        //imageView.setBackgroundResource(R.drawable.bild3);
 
         handler = new Handler();
 
-        // Update time when starting
-        //updateNetworkTime();
-
+        // Uppdatera tid vid start
         getSystemTime();
 
-        //Update every sec
+        // Uppdatera varje sekund
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(isNetworkAvailable()){
-                    updateNetworkTime();
+                if (isNetworkAvailable()) {
+                    getNetworkTime();
                 } else {
                     getSystemTime();
                 }
-                handler.postDelayed(this, 1000); // Update every sec
+                handler.postDelayed(this, 1000); // Uppdatera varje sekund
             }
         }, 1000);
     }
 
-    // function for pick up system time
-    private String getSystemTime() {
+    // Funktion för att hämta systemtid
+    private void getSystemTime() {
         Date date = new Date(System.currentTimeMillis());
         String time = timeFormat.format(date);
-        timeTextView.setText("System Time: " + time);
+        timeTextView.setText("Systemtid: " + time);
         timeTextView.setTextColor(Color.BLACK);
-        return time;
     }
 
-
-
-    // function for pick up network time
-    private void updateNetworkTime() {
+    // Funktion för att hämta nätverkstid
+    private void getNetworkTime() {
         NTPUDPClient client = new NTPUDPClient();
         Thread networkTimeThread = new Thread(new Runnable() {
             @Override
@@ -92,15 +87,14 @@ public class MainActivity extends AppCompatActivity {
         networkTimeThread.start();
     }
 
-    //function control over network
-    private boolean isNetworkAvailable(){
+    // Funktion för kontroll av nätverkstillgänglighet
+    private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        if(connectivityManager != null){
+        if (connectivityManager != null) {
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            return networkInfo != null &&networkInfo.isConnected();
-        } else{
+            return networkInfo != null && networkInfo.isConnected();
+        } else {
             return false;
         }
-
     }
 }
