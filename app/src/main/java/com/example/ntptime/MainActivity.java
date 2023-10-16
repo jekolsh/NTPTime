@@ -2,6 +2,7 @@ package com.example.ntptime;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
@@ -33,12 +34,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Update time when starting
         updateNetworkTime();
+        getSystemTime();
 
+        //Update every sec
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                systemTimeTextView.setText("Systemtid: " + getSystemTime());
-                //updateNetworkTime();
+                updateNetworkTime();
+                getSystemTime();
                 handler.postDelayed(this, 1000); // Update every sec
             }
         }, 1000);
@@ -46,8 +49,11 @@ public class MainActivity extends AppCompatActivity {
 
     // function for pick up system time
     private String getSystemTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        return sdf.format(new Date());
+        Date date = new Date(System.currentTimeMillis());
+        String time = timeFormat.format(date);
+        systemTimeTextView.setText("System Time: " + time);
+        systemTimeTextView.setTextColor(Color.BLACK);
+        return time;
     }
 
 
@@ -69,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
                     runOnUiThread(() -> {
                         networkTimeTextView.setText("Network Time: " + time);
+                        systemTimeTextView.setTextColor(Color.BLACK);
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
