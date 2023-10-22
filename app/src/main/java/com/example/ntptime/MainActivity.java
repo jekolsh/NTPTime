@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.widget.TextView;
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         timeFormat = new SimpleDateFormat("HH:mm:ss");
         timeTextView = findViewById(R.id.timeTextView);
 
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
 
         // Update tid when starting
         getSystemTime();
