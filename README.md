@@ -1,7 +1,8 @@
 
-# NTP Time Getter
+# Synchronized Clock
 
-NTP Time Getter is a simple Android app that retrieves the current time from either the device's system clock or network time using the NTP protocol. This app can be useful if you need precise time synchronization for your Android device.
+Synchronized Clock is a simple Android app designed to provide precise time synchronization for your Android device. It retrieves the current time from either the device's system clock or a network time server using the NTP protocol.
+
 
 ## Features
 - Displays the current time from either the system clock or an NTP server.
@@ -22,6 +23,5 @@ NTP Time Getter is a simple Android app that retrieves the current time from eit
 - Build and run the app on your Android device.
 
 ## Technologies
-Android Studio
-
-Apache Commons Net for NTP time retrieval.
+- Android Studio
+- Apache Commons Net for NTP time retrieval.
