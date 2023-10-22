@@ -16,6 +16,7 @@ import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
 public class MainActivity extends AppCompatActivity {
     private TextView timeTextView;
     private SimpleDateFormat timeFormat;
@@ -25,16 +26,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize SimpleDateFormat for time formatting
         timeFormat = new SimpleDateFormat("HH:mm:ss");
         timeTextView = findViewById(R.id.timeTextView);
 
+        // Initialize a Handler to run tasks on the main (UI) thread
         handler = new Handler(Looper.getMainLooper());
 
-        // Update tid when starting
+        // Update time when the activity starts
         getSystemTime();
 
-        // Update every sec
-        handler.postDelayed(new Runnable() {
+        // Periodically update the time every second
+        Runnable updateRunnable = new Runnable() {
             @Override
             public void run() {
                 if (isNetworkAvailable()) {
@@ -42,48 +46,55 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     getSystemTime();
                 }
-                handler.postDelayed(this, 1000);
+                handler.postDelayed(this, 1000); // Schedule the Runnable again in 1 second
             }
-        }, 1000);
+        };
+
+        handler.postDelayed(updateRunnable, 1000);
     }
 
-    // Function to get system time
+
+    // Function to get and display the system time
     private void getSystemTime() {
+        // Get the current date and time
         Date date = new Date(System.currentTimeMillis());
+        // Format the current time using the timeFormat SimpleDateFormat
         String time = timeFormat.format(date);
         String formattedTime = getString(R.string.system_time_label, time);
         timeTextView.setText(formattedTime);
         timeTextView.setTextColor(Color.parseColor("#FF33FF"));
     }
 
-    // Function to get network time
+    // Function to get and display network time
     private void getNetworkTime() {
+        // Create a new NTPUDPClient to fetch network time
         NTPUDPClient client = new NTPUDPClient();
-        Thread networkTimeThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    InetAddress addr = InetAddress.getByName("time.google.com");
-                    client.open();
-                    TimeInfo info = client.getTime(addr);
-                    client.close();
+        // Create a new thread to run network time retrieval
+        Thread networkTimeThread = new Thread(() -> {
+            try {
+                // Get the InetAddress of the NTP server
+                InetAddress addr = InetAddress.getByName("time.google.com");
+                client.open();
+                TimeInfo info = client.getTime(addr);
+                client.close();
 
-                    Date networkTime = new Date(info.getReturnTime());
-                    String time = timeFormat.format(networkTime);
+                Date networkTime = new Date(info.getReturnTime());
+                String time = MainActivity.this.timeFormat.format(networkTime);
+                // Create a formatted time string with a label and update the UI on the main (UI) thread
+                String formattedTime = getString(R.string.network_time_label, time);
 
-                    runOnUiThread(() -> {
-                        timeTextView.setText("Network Time: " + time);
-                        timeTextView.setTextColor(Color.parseColor("#0000FF"));
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                runOnUiThread(() -> {
+                    timeTextView.setText(formattedTime);
+                    timeTextView.setTextColor(Color.parseColor("#0000FF"));
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
         networkTimeThread.start();
     }
 
-    //Function for checking network availability
+    // Function to check network availability
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         if (connectivityManager != null) {
