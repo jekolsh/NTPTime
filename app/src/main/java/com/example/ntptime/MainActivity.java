@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private void getSystemTime() {
         Date date = new Date(System.currentTimeMillis());
         String time = timeFormat.format(date);
-        timeTextView.setText("System time: " + time);
+        String formattedTime = getString(R.string.system_time_label, time);
+        timeTextView.setText(formattedTime);
         timeTextView.setTextColor(Color.parseColor("#FF33FF"));
     }
 

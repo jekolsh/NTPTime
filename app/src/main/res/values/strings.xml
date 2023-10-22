@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NTPTime</string>
+    <string name="system_time_label">System Time: %s</string>
+    <string name="network_time_label">Network Time: %s</string>
 </resources>
