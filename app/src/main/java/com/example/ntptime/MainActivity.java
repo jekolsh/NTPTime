@@ -70,25 +70,31 @@ public class MainActivity extends AppCompatActivity {
         // Create a new NTPUDPClient to fetch network time
         NTPUDPClient client = new NTPUDPClient();
         // Create a new thread to run network time retrieval
-        Thread networkTimeThread = new Thread(() -> {
-            try {
-                // Get the InetAddress of the NTP server
-                InetAddress addr = InetAddress.getByName("time.google.com");
-                client.open();
-                TimeInfo info = client.getTime(addr);
-                client.close();
+        Thread networkTimeThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Get the InetAddress of the NTP server
+                    InetAddress addr = InetAddress.getByName("time.google.com");
+                    TimeInfo info = client.getTime(addr);
 
-                Date networkTime = new Date(info.getReturnTime());
-                String time = MainActivity.this.timeFormat.format(networkTime);
-                // Create a formatted time string with a label and update the UI on the main (UI) thread
-                String formattedTime = getString(R.string.network_time_label, time);
+                    long networkTime = info.getMessage().getTransmitTimeStamp().getTime();
+                    Date adjustedTime = new Date(networkTime);
+                    String time = timeFormat.format(adjustedTime);
 
-                runOnUiThread(() -> {
-                    timeTextView.setText(formattedTime);
-                    timeTextView.setTextColor(Color.parseColor("#0000FF"));
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
+                    runOnUiThread(() -> {
+                        // Create a formatted time string with a label and update the UI on the main (UI) thread
+                        String formattedTime = getString(R.string.network_time_label, time);
+                        timeTextView.setText(formattedTime);
+                        timeTextView.setTextColor(Color.parseColor("#0000FF"));
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    runOnUiThread(() -> {
+                        getSystemTime();
+                    });
+                }
             }
         });
         networkTimeThread.start();
